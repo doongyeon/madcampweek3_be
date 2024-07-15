@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
-from models import Song, Lyric
-from schemas import SongCreate, LyricCreate
+from models import Song, Lyric, TranslatedLyric
+from schemas import SongCreate, LyricCreate, TranslatedLyricCreate
+from typing import List  # 추가된 부분
 
 def create_song(db: Session, song: SongCreate):
     db_song = Song(
@@ -37,3 +38,14 @@ def get_lyrics_by_song_title_and_artist(db: Session, title: str, artist: str):
     if song:
         return db.query(Lyric).filter(Lyric.song_id == song.song_id).all()
     return None
+
+def create_translated_lyrics(db: Session, song_id: int, translated_lyrics: List[TranslatedLyricCreate]):
+    for translated_lyric in translated_lyrics:
+        db_translated_lyric = TranslatedLyric(
+            song_id=song_id,
+            timestamp=translated_lyric.timestamp,
+            original_lyrics=translated_lyric.original_lyrics,
+            translated_lyrics=translated_lyric.translated_lyrics
+        )
+        db.add(db_translated_lyric)
+    db.commit()

@@ -19,7 +19,22 @@ class Lyric(LyricBase):
     song_id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
+
+class TranslatedLyricBase(BaseModel):
+    timestamp: str
+    original_lyrics: str
+    translated_lyrics: str
+
+class TranslatedLyricCreate(TranslatedLyricBase):
+    pass
+
+class TranslatedLyric(TranslatedLyricBase):
+    id: int
+    song_id: int
+
+    class Config:
+        from_attributes = True
 
 class SongBase(BaseModel):
     title: str
@@ -27,8 +42,8 @@ class SongBase(BaseModel):
     nickname: str
     language_type: LanguageTypeEnum
     album: Optional[str] = None
-    likes: int = 0  # 좋아요 필드 추가
-    dislikes: int = 0  # 싫어요 필드 추가
+    likes: int = 0
+    dislikes: int = 0
 
 class SongCreate(SongBase):
     lyrics: List[LyricCreate]
@@ -38,4 +53,4 @@ class Song(SongBase):
     lyrics: List[Lyric] = []
 
     class Config:
-        orm_mode = True
+        from_attributes = True
