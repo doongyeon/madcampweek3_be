@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Lyrics</title>
+    <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css">
+    <style>
+        header {
+            width: 100%;
+            height: 50px;
+            background-color: #f8f9fa;
+            display: flex;
+            align-items: center; /* Center items vertically */
+            padding: 0 20px;
+        }
+        .header-container {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        .logo img {
+            height: 30px;
+            margin-right: 10px;
+        }
+        .logo span {
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        nav {
+            display: flex;
+            align-items: center;
+        }
+        nav ul {
+            display: flex;
+            margin: 0;
+            padding: 0;
+        }
+        nav ul li {
+            list-style: none;
+            margin-left: 20px;
+        }
+        nav ul li a {
+            text-decoration: none;
+            color: inherit;
+            border: none;
+        }
+        main {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            max-width: 800px; /* 메인 컨텐츠의 최대 너비 설정 */
+            margin: 0 auto; /* 중앙 정렬 */
+        }
+        .card {
+            background: #4b4b4b;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 100%;
+            min-width: 600px;
+            color: #ffffff;
+            margin-bottom: 20px; /* 카드 뷰 사이 간격 추가 */
+            display: flex;
+            flex-direction: column; /* 카드 내용을 세로로 정렬 */
+        }
+        .card-content {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+        .lyric-line {
+            display: flex;
+            flex-direction: column; /* 가사를 세로로 정렬 */
+            width: 100%;
+        }
+        .timestamp {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .lyric-text {
+            margin-bottom: 5px;
+        }
+        .translated-text {
+            color: #aaaaaa;
+        }
+        .card p {
+            margin: 10px 0;
+        }
+        ul {
+            padding: 0;
+            list-style: none;
+            width: 100%;
+        }
+        ul li {
+            list-style: none;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <img src="/static/SyncIcon.png">
+                <span>SyncManager</span>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="/">Upload</a></li>
+                    <li><a href="/songs">View Songs List</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <main>
+        <h1>{{ song.title }}</h1>
+        <p>Artist: {{ song.artist }}</p>
+        <p>Uploader: {{ song.nickname }}</p>
+        <ul>
+            {% for lyric in lyrics %}
+            <li class="card">
+                <div class="card-content">
+                    <div class="lyric-line">
+                        <p class="timestamp">[{{ lyric.timestamp }}]</p>
+                        <p class="lyric-text">{{ lyric.lyrics }}</p>
+                        {% if language_type == "LanguageType.Both" %}
+                            <p class="translated-text">{{ lyric.translated }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </main>
+</body>
+</html>
