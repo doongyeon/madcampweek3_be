@@ -30,22 +30,25 @@ def create_song(db: Session, song: SongCreate):
 def get_song(db: Session, song_id: int):
     return db.query(Song).filter(Song.song_id == song_id).first()
 
-def get_songs(db: Session, skip: int = 0, limit: int = 10):
-    return db.query(Song).offset(skip).limit(limit).all()
+def get_songs(db: Session, skip: int = 0, limit: int = None):  # limit의 기본값을 None으로 설정
+    query = db.query(Song).offset(skip)
+    if limit:
+        query = query.limit(limit)
+    return query.all()
 
-def get_lyrics_by_song_title_and_artist(db: Session, title: str, artist: str):
-    song = db.query(Song).filter(Song.title == title, Song.artist == artist).first()
-    if song:
-        return db.query(Lyric).filter(Lyric.song_id == song.song_id).all()
-    return None
+def get_lyrics_by_song_id(db: Session, song_id: int):
+    return db.query(Lyric).filter(Lyric.song_id == song_id).all()
 
 def create_translated_lyrics(db: Session, song_id: int, translated_lyrics: List[TranslatedLyricCreate]):
     for translated_lyric in translated_lyrics:
         db_translated_lyric = TranslatedLyric(
             song_id=song_id,
             timestamp=translated_lyric.timestamp,
-            original_lyrics=translated_lyric.original_lyrics,
-            translated_lyrics=translated_lyric.translated_lyrics
+            original=translated_lyric.original_lyrics,
+            translated=translated_lyric.translated_lyrics
         )
         db.add(db_translated_lyric)
     db.commit()
+
+def get_translated_lyrics(db: Session, song_id: int):
+    return db.query(TranslatedLyric).filter(TranslatedLyric.song_id == song_id).all()

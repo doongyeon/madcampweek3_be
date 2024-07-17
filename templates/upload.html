@@ -2,21 +2,240 @@
 <html>
 <head>
     <title>Upload LRC File</title>
+    <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css">
+    <style>
+        header {
+            width: 100%;
+            height: 50px;
+            background-color: #f8f9fa;
+            display: flex;
+            align-items: center; /* Center items vertically */
+            padding: 0 20px;
+        }
+        .header-container {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        .logo img {
+            height: 30px;
+            margin-right: 10px;
+        }
+        .logo span {
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        nav {
+            display: flex;
+            align-items: center;
+        }
+        nav ul {
+            display: flex;
+            margin: 0;
+            padding: 0;
+        }
+        nav ul li {
+            list-style: none;
+            margin-left: 20px;
+        }
+        nav ul li a {
+            text-decoration: none;
+            color: inherit;
+            border: none;
+        }
+        main {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: calc(100vh - 70px);
+            padding: 20px;
+        }
+        .card {
+            background: #4b4b4b;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 100%;
+            max-width: 500px;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .card h1 {
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+        .form-section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+        }
+        .form-section form {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .form-section label {
+            color: #ffffff;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        .form-section input[type="text"], .form-section select, .form-section input[type="file"], .form-section input[type="submit"] {
+            width: 80%;
+            margin-bottom: 10px;
+            padding: 10px;
+            box-sizing: border-box;
+            text-align: center;
+        }
+        .form-section input[type="submit"] {
+            margin-top: 40px;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 300px;
+            text-align: center;
+            position: relative;
+        }
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 2s linear infinite;
+            margin: auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .success-message {
+            color: #28a745;
+            margin-top: 20px;
+            display: none;
+        }
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            display: none;
+        }
+    </style>
 </head>
 <body>
-    <h1>Upload LRC File</h1>
-    <form action="/upload" method="post" enctype="multipart/form-data">
-        <label for="nickname">Nickname:</label>
-        <input type="text" id="nickname" name="nickname" required><br>
-        <label for="language_type">Language Type:</label>
-        <select id="language_type" name="language_type" required>
-            <option value="Korean">Korean</option>
-            <option value="Foreign">Foreign</option>
-            <option value="Both">Both</option>
-        </select><br>
-        <label for="file">LRC File:</label>
-        <input type="file" id="file" name="file" accept=".lrc" required><br>
-        <input type="submit" value="Upload">
-    </form>
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <img src="/static/SyncIcon.png">
+                <span>SyncManager</span>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="/">Upload</a></li>
+                    <li><a href="/songs">View Songs List</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <main>
+        <div class="card">
+            <h1>Upload LRC File</h1>
+            <div class="form-section">
+                <form id="upload-form" method="post" enctype="multipart/form-data">
+                    <label for="nickname">Nickname:</label>
+                    <input type="text" id="nickname" name="nickname" required><br>
+                    <label for="language_type">Language Type:</label>
+                    <select id="language_type" name="language_type" required>
+                        <option value="Korean">Korean</option>
+                        <option value="Foreign">Foreign</option>
+                        <option value="Both">Both</option>
+                    </select><br>
+                    <label for="file">LRC File:</label>
+                    <input type="file" id="file" name="file" accept=".lrc" required><br>
+                    <input type="submit" value="Upload">
+                </form>
+            </div>
+        </div>
+    </main>
+    
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <button class="close-btn" id="close-btn">&times;</button>
+            <div id="loading-spinner" class="loading-spinner"></div>
+            <p id="success-message" class="success-message">Upload successful!</p>
+        </div>
+    </div>
+    
+    <script>
+        document.getElementById('upload-form').onsubmit = async function(event) {
+            event.preventDefault();
+            const formData = new FormData(this);
+            const submitButton = this.querySelector('input[type="submit"]');
+            const modal = document.getElementById('modal');
+            const loadingSpinner = document.getElementById('loading-spinner');
+            const successMessage = document.getElementById('success-message');
+            const closeButton = document.getElementById('close-btn');
+
+            submitButton.disabled = true;
+            modal.style.display = 'flex';
+            loadingSpinner.style.display = 'block';
+            successMessage.style.display = 'none';
+            closeButton.style.display = 'none';
+
+            try {
+                const response = await fetch('/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                const result = await response.json();
+                if (result.success) {
+                    loadingSpinner.style.display = 'none';
+                    successMessage.style.display = 'block';
+                    closeButton.style.display = 'block';
+                } else {
+                    alert('Upload failed!');
+                    modal.style.display = 'none';
+                }
+            } catch (error) {
+                alert('An error occurred while uploading the file.');
+                modal.style.display = 'none';
+            } finally {
+                submitButton.disabled = false;
+            }
+
+            closeButton.onclick = function() {
+                modal.style.display = 'none';
+            };
+        };
+    </script>
 </body>
 </html>

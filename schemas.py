@@ -17,14 +17,15 @@ class LyricCreate(LyricBase):
 class Lyric(LyricBase):
     id: int
     song_id: int
+    translated: Optional[str] = None
 
     class Config:
         from_attributes = True
 
 class TranslatedLyricBase(BaseModel):
     timestamp: str
-    original_lyrics: str
-    translated_lyrics: str
+    original: str
+    translated: str
 
 class TranslatedLyricCreate(TranslatedLyricBase):
     pass
